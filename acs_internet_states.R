@@ -4,7 +4,7 @@ library(tidyverse)
 #load variable names 
 #filter for variables focused on internet 
 vars <- load_variables(2023, "acs1/cprofile", cache = TRUE) %>% 
-  filter(concept != 'Comparative Social Characteristics in Puerto Rico') %>% 
+  filter(concept != 'Comparative Social Characteristics in Puerto Rico') %>%
   filter(str_detect(label, 'COMPUTERS AND INTERNET')) %>% 
   #extract year and variable name 
   #need to call rowwise for mutate() to work with strsplit and unlist 
@@ -38,8 +38,10 @@ states_wider <- states %>%
          `Households with broadband` = `With a broadband Internet subscription`*`Total households`) %>% 
   rename(State = NAME,
          `Percentage households with a computer` = `With a computer`,
-         `Percentage households with broadband` = `With a broadband Internet subscription`)
+         `Percentage households with broadband` = `With a broadband Internet subscription`) %>% 
+  #filter out empty data for PR
+  filter(GEOID != 72)
 
 #write to Excel 
-writexl::write_xlsx(list("Internet" = states_wider), 'state_internet_acs.xlsx')
+writexl::write_xlsx(list("State" = states_wider), 'state_internet_acs.xlsx') 
   
